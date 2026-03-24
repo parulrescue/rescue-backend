@@ -149,7 +149,7 @@ export async function buildApp() {
         (async () => {
             try {
                 const res = await fetch("https://rescue-backend-b4uz.onrender.com/");
-                console.log(res);
+                console.log(res.status, 'Ping');
             } catch (error) {
                 console.log(error);
             }
