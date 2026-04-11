@@ -61,7 +61,7 @@ export async function buildApp() {
 
     // CORS — whitelist only frontend URL
     app.register(fastifyCors, {
-        origin: [config.cors.frontendUrl],
+        origin: ['*'],
         credentials: true,
     });
 
