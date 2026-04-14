@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "rimraf dist && tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "db:sync": "tsx src/db/sync.ts",
     "lint:types": "tsc -p tsconfig.json --noEmit"
   },
