@@ -53,7 +53,7 @@ export async function buildApp() {
     await initDb();
 
     const app = Fastify({
-        logger,
+        loggerInstance: logger,
         trustProxy: true,
         genReqId: () => randomUUID(),
         disableRequestLogging: true,

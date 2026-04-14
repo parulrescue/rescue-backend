@@ -23,6 +23,6 @@ export const errorPlugin: FastifyPluginAsync = fp(async (app) => {
     if (db) return reply.status(db.code).send(error(db.code, db.message));
 
     const code = isFastifyError(err) && typeof (err as any).code === "number" ? (err as any).code : HttpStatus.INTERNAL_SERVER_ERROR;
-    return reply.status(code).send(code == HttpStatus.INTERNAL_SERVER_ERROR ? serverError("Internal server error") : error(code, err.message));
+    return reply.status(code).send(code == HttpStatus.INTERNAL_SERVER_ERROR ? serverError("Internal server error") : error(code, (err as Error).message));
   });
 });
