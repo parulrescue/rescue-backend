@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = require("./config");
-const app_1 = require("./app");
+const config_1 = require("./src/config");
+const app_1 = require("./src/app");
 async function startServer() {
     try {
         const app = await (0, app_1.buildApp)();
