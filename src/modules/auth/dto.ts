@@ -31,6 +31,23 @@ export const ChangePasswordSchema = z
     path: ["confirm_password"],
   });
 
+export const SignupRequestOtpSchema = z.object({
+  full_name: z.string().min(1).max(150),
+  username: z.string().min(4).max(20).regex(/^[a-z_]+$/, "Only lowercase letters & underscore allowed"),
+  email: z.string().email().max(191),
+  mobile_number: z.string().regex(/^\d+$/, "Only digits").min(10).max(13),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export const SignupResendOtpSchema = z.object({
+  email: z.string().email(),
+});
+
+export const SignupVerifyOtpSchema = z.object({
+  email: z.string().email(),
+  otp: z.string().regex(/^\d{6}$/, "OTP must be 6 digits"),
+});
+
 export const SessionIdParamSchema = z.object({
   id: z.string().regex(/^\d+$/, "Invalid session ID").transform(Number),
 });

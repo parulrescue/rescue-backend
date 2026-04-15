@@ -52,6 +52,27 @@ export function accountUpdatedMail(data: { fullName: string; email: string; chan
   };
 }
 
+export function signupOtpMail(data: { fullName: string; email: string; otp: string }): { subject: string; html: string } {
+  return {
+    subject: "Verify your email — Animal Rescue",
+    html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2 style="color: #333;">Verify Your Email</h2>
+      <p>Hi ${data.fullName},</p>
+      <p>Thanks for signing up with <strong>${data.email}</strong>. Use the code below to verify your email address:</p>
+      <div style="text-align: center; margin: 30px 0;">
+        <div style="display: inline-block; background: #fffbeb; border: 1px solid #fde68a; padding: 16px 28px; border-radius: 12px; font-size: 30px; letter-spacing: 10px; font-weight: 700; color: #92400e;">
+          ${data.otp}
+        </div>
+      </div>
+      <p style="color: #666; font-size: 14px;">This code expires in <strong>10 minutes</strong>.</p>
+      <p style="color: #666; font-size: 14px;">If you didn't request this, please ignore this email.</p>
+      <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+      <p style="color: #999; font-size: 12px;">Animal Rescue Management System</p>
+    </div>`,
+  };
+}
+
 export function welcomeMail(data: { fullName: string; email: string; username: string; password: string; loginLink: string }): { subject: string; html: string } {
   return {
     subject: "Welcome to Animal Rescue — Your Login Credentials",

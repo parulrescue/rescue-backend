@@ -5,6 +5,9 @@ import {
   ResetPasswordSchema,
   ChangePasswordSchema,
   SessionIdParamSchema,
+  SignupRequestOtpSchema,
+  SignupResendOtpSchema,
+  SignupVerifyOtpSchema,
 } from "./dto";
 import {
   loginUser,
@@ -14,6 +17,9 @@ import {
   forgotPassword,
   resetPassword,
   changePassword,
+  signupRequestOtp,
+  signupResendOtp,
+  signupVerifyOtp,
 } from "./service";
 import { validate } from "../../shared/http/validate";
 import { HttpStatus } from "../../shared/http/status";
@@ -90,8 +96,41 @@ const changePasswordHandler = async (req: FastifyRequest, res: FastifyReply) => 
   }
 };
 
+const signupRequestOtpHandler = async (req: FastifyRequest, res: FastifyReply) => {
+  try {
+    const result = await signupRequestOtp(req);
+    res.status(result?.success?.code || result?.error?.code).send(result);
+  } catch (error) {
+    console.log("Error:- ", error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(await serverError(error));
+  }
+};
+
+const signupResendOtpHandler = async (req: FastifyRequest, res: FastifyReply) => {
+  try {
+    const result = await signupResendOtp(req);
+    res.status(result?.success?.code || result?.error?.code).send(result);
+  } catch (error) {
+    console.log("Error:- ", error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(await serverError(error));
+  }
+};
+
+const signupVerifyOtpHandler = async (req: FastifyRequest, res: FastifyReply) => {
+  try {
+    const result = await signupVerifyOtp(req);
+    res.status(result?.success?.code || result?.error?.code).send(result);
+  } catch (error) {
+    console.log("Error:- ", error);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).send(await serverError(error));
+  }
+};
+
 export const authRoutes: FastifyPluginAsync = async (app) => {
   app.post("/login", { preHandler: validate(LoginBodySchema) }, login);
+  app.post("/signup/request-otp", { preHandler: validate(SignupRequestOtpSchema) }, signupRequestOtpHandler);
+  app.post("/signup/resend-otp", { preHandler: validate(SignupResendOtpSchema) }, signupResendOtpHandler);
+  app.post("/signup/verify-otp", { preHandler: validate(SignupVerifyOtpSchema) }, signupVerifyOtpHandler);
   app.post("/logout", { preHandler: authenticate }, logout);
   app.get("/sessions", { preHandler: authenticate }, sessions);
   app.delete("/sessions/:id", { preHandler: [authenticate, validate(SessionIdParamSchema, "params")] }, revokeSessionHandler);

@@ -1,9 +1,12 @@
 import { Table, Column, Model, DataType } from "sequelize-typescript";
 
-@Table({ tableName: "users", timestamps: true })
-export class User extends Model {
+@Table({ tableName: "signup_otps", timestamps: true })
+export class SignupOtp extends Model {
   @Column({ type: DataType.INTEGER, autoIncrement: true, primaryKey: true })
   declare id: number;
+
+  @Column({ type: DataType.STRING(191), allowNull: false, unique: true })
+  email!: string;
 
   @Column({ type: DataType.STRING(150), allowNull: false })
   full_name!: string;
@@ -14,18 +17,21 @@ export class User extends Model {
   @Column({ type: DataType.STRING(50), allowNull: false })
   username!: string;
 
-  @Column({ type: DataType.STRING(191), allowNull: false })
-  email!: string;
-
   @Column({ type: DataType.STRING(255), allowNull: false })
   password_hash!: string;
 
   @Column({ type: DataType.TEXT, allowNull: true })
   password_plain!: string | null;
 
-  @Column({ type: DataType.STRING(500), allowNull: true })
-  profile_pic!: string | null;
+  @Column({ type: DataType.STRING(6), allowNull: false })
+  otp!: string;
 
-  @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: true })
-  is_active!: boolean;
+  @Column({ type: DataType.DATE, allowNull: false })
+  expires_at!: Date;
+
+  @Column({ type: DataType.DATE, allowNull: false })
+  last_sent_at!: Date;
+
+  @Column({ type: DataType.INTEGER, allowNull: false, defaultValue: 0 })
+  attempts!: number;
 }

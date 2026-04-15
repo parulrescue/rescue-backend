@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
 import { config } from "../config";
-import { passwordResetMail, welcomeMail, accountUpdatedMail } from "./email.templates";
+import { passwordResetMail, welcomeMail, accountUpdatedMail, signupOtpMail } from "./email.templates";
 
 let transporter: Transporter | null = null;
 
@@ -31,6 +31,11 @@ export async function sendMail(to_email: string, subject: string, html: string):
 
 export async function sendPasswordResetEmail(to: string, fullName: string, resetLink: string): Promise<void> {
   const mail = passwordResetMail({ fullName, email: to, resetLink });
+  await sendMail(to, mail.subject, mail.html);
+}
+
+export async function sendSignupOtpEmail(to: string, fullName: string, otp: string): Promise<void> {
+  const mail = signupOtpMail({ fullName, email: to, otp });
   await sendMail(to, mail.subject, mail.html);
 }
 

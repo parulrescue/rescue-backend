@@ -5,6 +5,7 @@ import { config } from "../config";
 import { User } from "./models/auth/user.model";
 import { Session } from "./models/auth/session.model";
 import { PasswordResetToken } from "./models/auth/password-reset-token.model";
+import { SignupOtp } from "./models/auth/signup-otp.model";
 import { Animal } from "./models/rescue/animal.model";
 import { Rescue } from "./models/rescue/rescue.model";
 import { RescueImage } from "./models/rescue/rescue-image.model";
@@ -29,7 +30,7 @@ export const sequelize = new Sequelize({
     ? { ssl: { rejectUnauthorized: false } }
     : {},
   logging: false,
-  models: [User, Session, PasswordResetToken, Animal, Rescue, RescueImage, RescuePerson, ToAddress, LogExport],
+  models: [User, Session, PasswordResetToken, SignupOtp, Animal, Rescue, RescueImage, RescuePerson, ToAddress, LogExport],
 });
 
 export async function initDb() {
