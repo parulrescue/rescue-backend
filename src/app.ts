@@ -144,17 +144,17 @@ export async function buildApp() {
     app.register(toAddressRoutes, { prefix: "/api/v1/to-addresses" });
     app.register(logExportRoutes, { prefix: "/api/logs" });
 
-    // Keep-alive ping every 15 seconds to prevent Render cold starts
-    setInterval(() => {
-        (async () => {
-            try {
-                const res = await fetch("https://rescue-backend-b4uz.onrender.com/");
-                console.log(res.status, 'Ping');
-            } catch (error) {
-                console.log(error);
-            }
-        })()
-    }, 15000);
+    // // Keep-alive ping every 15 seconds to prevent Render cold starts
+    // setInterval(() => {
+    //     (async () => {
+    //         try {
+    //             const res = await fetch("https://rescue-backend-b4uz.onrender.com/");
+    //             console.log(res.status, 'Ping');
+    //         } catch (error) {
+    //             console.log(error);
+    //         }
+    //     })()
+    // }, 15000);
 
     return app;
 }
