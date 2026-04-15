@@ -139,7 +139,7 @@ export async function forgotPassword(req: FastifyRequest) {
 
     // Always return success to prevent email enumeration
     if (!user) {
-      return error(HttpStatus.BAD_REQUEST,"email does not registered");
+      return error(HttpStatus.BAD_REQUEST, "email does not registered");
     }
 
     // Invalidate any existing unused tokens for this user
@@ -160,7 +160,7 @@ export async function forgotPassword(req: FastifyRequest) {
     });
 
     const resetLink = `${config.cors.frontendUrl}/reset-password?token=${raw}`;
-console.log(resetLink, 'reset');
+    console.log(resetLink, 'reset');
     try {
       await sendPasswordResetEmail(user.email, user.full_name, resetLink);
     } catch (emailErr) {
@@ -185,24 +185,24 @@ export async function resetPassword(req: FastifyRequest) {
         used: false,
         expires_at: { [Op.gt]: new Date() },
       },
-      raw : true
+      raw: true
     });
 
     if (!resetToken) {
       return error(HttpStatus.BAD_REQUEST, "Invalid or expired reset token");
     }
 
-    const user = await User.findOne({where : {id : resetToken.user_id}, raw : true});
+    const user = await User.findOne({ where: { id: resetToken.user_id }, raw: true });
     if (!user) {
       return error(HttpStatus.NOT_FOUND, "User not found");
     }
 
     const hash = await hashPassword(password);
     const encryptedPlain = encryptAES(password);
-    await User.update({ password_hash: hash, password_plain: encryptedPlain }, {where : {id : user.id}});
+    await User.update({ password_hash: hash, password_plain: encryptedPlain }, { where: { id: user.id } });
 
     // Mark token as used
-    await PasswordResetToken.update({ used: true }, {where : {id : resetToken.id}});
+    await PasswordResetToken.update({ used: true }, { where: { id: resetToken.id } });
 
     // Revoke all active sessions
     await Session.update(
@@ -325,7 +325,7 @@ export async function signupVerifyOtp(req: FastifyRequest) {
       return error(HttpStatus.CONFLICT, "Email is already registered");
     }
 
-    const user = await User.create({
+    const user_created = await User.create({
       full_name: pending.full_name,
       username: pending.username,
       email: pending.email,
@@ -335,6 +335,7 @@ export async function signupVerifyOtp(req: FastifyRequest) {
       is_active: true,
     });
 
+    const user: any = await User.findOne({ where: { id: user_created.id }, raw: true });
     await SignupOtp.destroy({ where: { id: pending?.id } });
 
     // Send notification to admins
