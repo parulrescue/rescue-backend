@@ -3,6 +3,7 @@ node_modules/
 
 # build output
 dist/
+.claude/
 
 # logs
 *.log
@@ -10,6 +11,9 @@ dist/
 # env files
 .env
 .env.*.local
+.env.local
+.env.prod
+.env.example
 
 # drizzle migrations are usually committed; keep generated meta/caches out if any
 .drizzle/

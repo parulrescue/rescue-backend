@@ -12,10 +12,10 @@ const localConfig = {
   },
 
   database: {
-    host: process.env.DATABASE_HOST ?? "localhost",
-    port: Number(process.env.DATABASE_PORT ?? "5432"),
-    user: process.env.DATABASE_USER ?? "postgres",
-    password: process.env.DATABASE_PASSWORD ?? "postgres",
+    host: process.env.DATABASE_HOST ?? "",
+    port: Number(process.env.DATABASE_PORT ?? ""),
+    user: process.env.DATABASE_USER ?? "",
+    password: process.env.DATABASE_PASSWORD ?? "",
     name: process.env.DATABASE_NAME ?? "",
     ssl: false,
   },
@@ -28,10 +28,10 @@ const localConfig = {
   },
 
   security: {
-    jwtSecret: process.env.JWT_SECRET || "jwt",
-    jwtExpiresIn: process.env.JWT_EXPIRES_IN || "48h",
+    jwtSecret: process.env.JWT_SECRET || "",
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN || "",
     bcryptSaltRounds: Number(process.env.BCRYPT_ROUNDS) || 12,
-    aesSecretKey: process.env.AES_SECRET_KEY || "32CharSecretKeyHere_ExactlyThis!",
+    aesSecretKey: process.env.AES_SECRET_KEY || "",
   },
 
   smtp: {
@@ -43,11 +43,11 @@ const localConfig = {
   },
 
   upload: {
-    dir: process.env.UPLOAD_DIR || "./uploads",
+    fileAccessUrl: process.env.FILE_ACCESS_URL || "",
   },
 
   cors: {
-    frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
+    frontendUrl: process.env.FRONTEND_URL || "",
   },
 };
 

@@ -61,7 +61,7 @@ export async function buildApp() {
 
     // CORS — whitelist only frontend URL
     app.register(fastifyCors, {
-        origin: ['*'],
+        origin: [config.cors.frontendUrl],
         credentials: true,
     });
 
@@ -81,28 +81,17 @@ export async function buildApp() {
 
     // Rate limiting — 100 req/min per IP
     app.register(fastifyRateLimit, {
-        max: 100,
+        max: 500,
         timeWindow: "1 minute",
     });
 
-    // Static file serving for uploads (legacy)
-    const uploadDir = path.resolve(config.upload.dir);
-    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-
-    app.register(fastifyStatic, {
-        root: uploadDir,
-        prefix: "/uploads/",
-        decorateReply: false,
-    });
-
-    // Static file serving for public/ directory (profile_pic, etc.)
+    // Static file serving for public/ directory
     const publicDir = path.join(process.cwd(), "public");
     if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true });
 
     app.register(fastifyStatic, {
         root: publicDir,
         prefix: "/public/",
-        decorateReply: false,
     });
 
     // Logging + client info

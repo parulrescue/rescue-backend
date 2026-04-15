@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import { pipeline } from "stream/promises";
 import { Transform } from "stream";
+import { config } from "../config";
 
 export interface UploadOptions {
   /** Subdirectory inside public/ (e.g. "profile_pic", "rescues") */
@@ -69,7 +70,7 @@ export async function uploadSingleFile(
   const ext = path.extname(file.filename) || ".jpg";
   const fileName = `${prefix}_${Date.now()}${ext}`;
   const fullPath = path.join(uploadDir, fileName);
-  const url = `${process.env.BASE_URL}/public/${subDir}/${fileName}`;
+  const url = `${config.upload.fileAccessUrl}/public/${subDir}/${fileName}`;
 
   const writeStream = fs.createWriteStream(fullPath);
   let size = 0;
