@@ -30,6 +30,7 @@
     "fstream": "^1.0.12",
     "moment": "^2.30.1",
     "moment-timezone": "^0.6.0",
+    "mysql2": "^3.22.0",
     "nodemailer": "^8.0.2",
     "pg": "^8.17.1",
     "pg-hstore": "^2.3.4",
