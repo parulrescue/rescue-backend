@@ -97,3 +97,22 @@ export function welcomeMail(data: { fullName: string; email: string; username: s
     </div>`,
   };
 }
+
+export function newUserRegistrationAdminMail(data: { fullName: string; email: string; username: string; mobileNumber: string }): { subject: string; html: string } {
+  return {
+    subject: "New User Registered — Animal Rescue",
+    html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2 style="color: #333;">New User Registration</h2>
+      <p>A new user has registered on the <strong>Animal Rescue</strong> platform. Here are the details:</p>
+      <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0; border: 1px solid #e5e7eb;">
+        <p style="margin: 5px 0;"><strong>Full Name:</strong> ${data.fullName}</p>
+        <p style="margin: 5px 0;"><strong>Email:</strong> ${data.email}</p>
+        <p style="margin: 5px 0;"><strong>Username:</strong> ${data.username}</p>
+        <p style="margin: 5px 0;"><strong>Mobile Number:</strong> ${data.mobileNumber}</p>
+      </div>
+      <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+      <p style="color: #999; font-size: 12px;">Animal Rescue Management System</p>
+    </div>`,
+  };
+}

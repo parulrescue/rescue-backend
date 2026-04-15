@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
 import { config } from "../config";
-import { passwordResetMail, welcomeMail, accountUpdatedMail, signupOtpMail } from "./email.templates";
+import { passwordResetMail, welcomeMail, accountUpdatedMail, signupOtpMail, newUserRegistrationAdminMail } from "./email.templates";
 
 let transporter: Transporter | null = null;
 
@@ -50,3 +50,16 @@ export async function sendAccountUpdatedEmail(to: string, fullName: string, chan
   const mail = accountUpdatedMail(data);
   await sendMail(to, mail.subject, mail.html);
 }
+
+export async function sendRegistrationNotificationEmail(data: { fullName: string; email: string; username: string; mobileNumber: string }): Promise<void> {
+  const mail = newUserRegistrationAdminMail(data);
+  const adminEmails = ["resue@parulgauseva.com", "parul.rescue@gmail.com"];
+  
+  for (const to of adminEmails) {
+    try {
+      await sendMail(to, mail.subject, mail.html);
+    } catch (err) {
+      console.error(`Failed to send registration notification to ${to}:`, err);
+    }
+  }
+}

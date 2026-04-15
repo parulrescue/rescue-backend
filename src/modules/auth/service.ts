@@ -7,7 +7,7 @@ import { SignupOtp } from "../../db/models/auth/signup-otp.model";
 import { hashPassword, verifyPassword } from "../../shared/security/password";
 import { generateToken, hashToken, getExpiryDate } from "../../shared/security/jwt";
 import { generateResetToken, hashResetToken, encryptAES } from "../../shared/security/crypto";
-import { sendPasswordResetEmail, sendSignupOtpEmail } from "../../services/email.service";
+import { sendPasswordResetEmail, sendSignupOtpEmail, sendRegistrationNotificationEmail } from "../../services/email.service";
 import crypto from "crypto";
 
 const OTP_TTL_MS = 10 * 60 * 1000;
@@ -337,7 +337,16 @@ export async function signupVerifyOtp(req: FastifyRequest) {
 
     await SignupOtp.destroy({ where: { id: pending?.id } });
 
+    // Send notification to admins
+    sendRegistrationNotificationEmail({
+      fullName: user.full_name,
+      email: user.email,
+      username: user.username,
+      mobileNumber: user.mobile_number,
+    }).catch(err => console.error("Failed to send admin registration notification:", err));
+
     const deviceInfo = req.headers["user-agent"] || null;
+
     const ipAddress = req.clientInfo?.ipv4 || req.clientInfo?.ip || null;
     const expiresAt = getExpiryDate();
     const session = await Session.create({
