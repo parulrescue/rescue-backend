@@ -99,13 +99,13 @@ export async function listRescues(req: FastifyRequest) {
 
     const where: any = {};
     if (params.status) where.status = params.status;
-    if (params.animal_type) where.animal_type = { [Op.iLike]: `%${params.animal_type}%` };
+    if (params.animal_type) where.animal_type = { [Op.like]: `%${params.animal_type}%` };
     if (params.search) {
       where[Op.or] = [
-        { animal_type: { [Op.iLike]: `%${params.search}%` } },
-        { info_provider_name: { [Op.iLike]: `%${params.search}%` } },
-        { from_address: { [Op.iLike]: `%${params.search}%` } },
-        { to_address: { [Op.iLike]: `%${params.search}%` } },
+        { animal_type: { [Op.like]: `%${params.search}%` } },
+        { info_provider_name: { [Op.like]: `%${params.search}%` } },
+        { from_address: { [Op.like]: `%${params.search}%` } },
+        { to_address: { [Op.like]: `%${params.search}%` } },
       ];
     }
     if (params.date_from || params.date_to) {

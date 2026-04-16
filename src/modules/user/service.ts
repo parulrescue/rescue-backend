@@ -95,9 +95,9 @@ export async function searchUsers(req: FastifyRequest) {
       where: {
         is_active: true,
         [Op.or]: [
-          { full_name: { [Op.iLike]: `%${q}%` } },
-          { mobile_number: { [Op.iLike]: `%${q}%` } },
-          { username: { [Op.iLike]: `%${q}%` } },
+          { full_name: { [Op.like]: `%${q}%` } },
+          { mobile_number: { [Op.like]: `%${q}%` } },
+          { username: { [Op.like]: `%${q}%` } },
         ],
       },
       attributes: ["id", "full_name", "mobile_number", "username", "profile_pic"],
@@ -123,8 +123,8 @@ export async function lookupUsers(req: FastifyRequest) {
       where: {
         is_active: true,
         [Op.or]: [
-          { full_name: { [Op.iLike]: `%${q}%` } },
-          { mobile_number: { [Op.iLike]: `%${q}%` } },
+          { full_name: { [Op.like]: `%${q}%` } },
+          { mobile_number: { [Op.like]: `%${q}%` } },
         ],
       },
       attributes: ["id", "full_name", "mobile_number", "profile_pic"],
