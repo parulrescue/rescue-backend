@@ -21,7 +21,7 @@ export interface UploadOptions {
 export interface UploadedFile {
   /** Full absolute path on disk */
   fullPath: string;
-  /** Relative URL for serving (e.g. /public/profile_pic/avatar_1_123456.jpg) */
+  /** Relative path stored in DB (e.g. profile_pic/avatar_1_123456.jpg). Serve via /api/file/{url}. */
   url: string;
   /** Original filename from client */
   originalName: string;
@@ -70,7 +70,7 @@ export async function uploadSingleFile(
   const ext = path.extname(file.filename) || ".jpg";
   const fileName = `${prefix}_${Date.now()}${ext}`;
   const fullPath = path.join(uploadDir, fileName);
-  const url = `${config.upload.fileAccessUrl}/public/${subDir}/${fileName}`;
+  const url = `${subDir}/${fileName}`;
 
   const writeStream = fs.createWriteStream(fullPath);
   let size = 0;
@@ -151,8 +151,8 @@ export async function uploadMultipleFiles(
       const ext = path.extname(part.filename) || ".jpg";
       const fileName = `${prefix}_${Date.now()}_${fileCount}${ext}`;
       const fullPath = path.join(uploadDir, fileName);
-      const url = `/public/${subDir}/${fileName}`;
-
+      const url = `${config.upload.fileAccessUrl}/api/file/${subDir}/${fileName}`;
+      console.log(url, "urll");
       const writeStream = fs.createWriteStream(fullPath);
       let size = 0;
 
@@ -192,13 +192,29 @@ export async function uploadMultipleFiles(
 }
 
 /**
- * Delete a file by its full path or URL.
+ * Delete a file by its stored DB value (relative path), legacy /public/ URL, or absolute path.
  */
 export function deleteFile(filePathOrUrl: string): void {
+  if (!filePathOrUrl) return;
+
   let fullPath = filePathOrUrl;
-  if (filePathOrUrl.startsWith("/public/")) {
-    fullPath = path.join(process.cwd(), filePathOrUrl);
+
+  // Strip protocol+host if a full URL was stored historically
+  const httpMatch = filePathOrUrl.match(/^https?:\/\/[^/]+(\/.*)$/);
+  if (httpMatch && httpMatch[1]) {
+    fullPath = httpMatch[1];
   }
+
+  // Legacy: "/public/sub/file.jpg" or "/api/file/sub/file.jpg"
+  if (fullPath.startsWith("/public/")) {
+    fullPath = path.join(process.cwd(), fullPath);
+  } else if (fullPath.startsWith("/api/file/")) {
+    fullPath = path.join(process.cwd(), "public", fullPath.slice("/api/file/".length));
+  } else if (!path.isAbsolute(fullPath)) {
+    // New format: "sub/file.jpg"
+    fullPath = path.join(process.cwd(), "public", fullPath);
+  }
+
   if (fs.existsSync(fullPath)) {
     fs.unlinkSync(fullPath);
   }
