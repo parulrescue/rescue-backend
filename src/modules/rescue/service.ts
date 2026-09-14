@@ -172,9 +172,6 @@ export async function updateRescueDate(req: FastifyRequest) {
     if (!rescue) {
       return error(HttpStatus.NOT_FOUND, "Rescue not found");
     }
-    if (rescue.get("created_by") !== req.userId) {
-      return error(HttpStatus.FORBIDDEN, "You can only update rescues you created");
-    }
 
     await rescue.update({ createdAt: new Date(created_at) });
 
