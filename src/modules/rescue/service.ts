@@ -173,7 +173,10 @@ export async function updateRescueDate(req: FastifyRequest) {
       return error(HttpStatus.NOT_FOUND, "Rescue not found");
     }
 
-    await rescue.update({ createdAt: new Date(created_at) });
+    // createdAt is a Sequelize read-only attribute on existing records — instance.update()
+    // silently ignores it, so it must be set with { raw: true } to bypass that guard.
+    rescue.set("createdAt", new Date(created_at), { raw: true });
+    await rescue.save();
 
     return success("Rescue date updated", { id: rescue.id, createdAt: rescue.get("createdAt") });
   } catch (err: any) {
