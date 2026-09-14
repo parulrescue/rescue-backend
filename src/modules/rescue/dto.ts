@@ -31,3 +31,7 @@ export const RescueListQuerySchema = z.object({
 export const RescueIdParamSchema = z.object({
   id: z.string().regex(/^\d+$/, "Invalid rescue ID").transform(Number),
 });
+
+export const UpdateRescueDateBodySchema = z.object({
+  created_at: z.string().refine((v) => !isNaN(new Date(v).getTime()), "Invalid date"),
+});

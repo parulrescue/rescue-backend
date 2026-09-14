@@ -163,6 +163,27 @@ export async function listRescues(req: FastifyRequest) {
   }
 }
 
+export async function updateRescueDate(req: FastifyRequest) {
+  try {
+    const { id } = req.params as { id: number };
+    const { created_at } = req.body as { created_at: string };
+
+    const rescue = await Rescue.findByPk(id);
+    if (!rescue) {
+      return error(HttpStatus.NOT_FOUND, "Rescue not found");
+    }
+    if (rescue.get("created_by") !== req.userId) {
+      return error(HttpStatus.FORBIDDEN, "You can only update rescues you created");
+    }
+
+    await rescue.update({ createdAt: new Date(created_at) });
+
+    return success("Rescue date updated", { id: rescue.id, createdAt: rescue.get("createdAt") });
+  } catch (err: any) {
+    return error(HttpStatus.INTERNAL_SERVER_ERROR, err.message || "Failed to update rescue date");
+  }
+}
+
 export async function getRescueDetail(req: FastifyRequest) {
   try {
     const { id } = req.params as { id: number };
