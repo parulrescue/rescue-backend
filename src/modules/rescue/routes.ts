@@ -50,5 +50,5 @@ export const rescueRoutes: FastifyPluginAsync = async (app) => {
   app.get("/", { preHandler: [authenticate, validate(RescueListQuerySchema, "query")] }, list);
   app.get("/:id", { preHandler: [authenticate, validate(RescueIdParamSchema, "params")] }, detail);
   app.post("/", { preHandler: authenticate }, create);
-  app.put("/:id/date", { preHandler: [authenticate, validate(RescueIdParamSchema, "params"), validate(UpdateRescueDateBodySchema)] }, updateDate);
+  app.put("/:id/date", { preHandler: [authenticate] }, updateDate);
 };
