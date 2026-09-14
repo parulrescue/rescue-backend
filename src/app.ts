@@ -3,8 +3,6 @@ import { randomUUID } from "crypto";
 import path from "path";
 import fs from "fs";
 
-import { config } from "./config";
-
 // plugins
 import { requestIdPlugin } from "./plugins/requestId.plugin";
 import { errorPlugin } from "./plugins/error.plugin";
@@ -59,10 +57,9 @@ export async function buildApp() {
         disableRequestLogging: true,
     });
 
-    // CORS — whitelist only frontend URL
+    // CORS — open to all origins
     app.register(fastifyCors, {
-        origin: [config.cors.frontendUrl],
-        credentials: true,
+        origin: "*",
     });
 
     // Helmet — security headers
