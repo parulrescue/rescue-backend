@@ -109,9 +109,9 @@ export async function listRescues(req: FastifyRequest) {
       ];
     }
     if (params.date_from || params.date_to) {
-      where.createdAt = {};
-      if (params.date_from) where.createdAt[Op.gte] = new Date(params.date_from);
-      if (params.date_to) where.createdAt[Op.lte] = new Date(params.date_to + "T23:59:59.999Z");
+      where.rescue_date = {};
+      if (params.date_from) where.rescue_date[Op.gte] = new Date(params.date_from);
+      if (params.date_to) where.rescue_date[Op.lte] = new Date(params.date_to + "T23:59:59.999Z");
     }
 
     const { count, rows } = await Rescue.findAndCountAll({
@@ -144,7 +144,7 @@ export async function listRescues(req: FastifyRequest) {
       ],
       attributes: [
         "id", "animal_type", "status", "from_address", "to_address",
-        "info_provider_name", "createdAt",
+        "info_provider_name", "rescue_date",
       ],
       offset,
       limit,
@@ -166,19 +166,16 @@ export async function listRescues(req: FastifyRequest) {
 export async function updateRescueDate(req: FastifyRequest) {
   try {
     const { id } = req.params as { id: number };
-    const { created_at } = req.body as { created_at: string };
+    const { rescue_date } = req.body as { rescue_date: string };
 
     const rescue = await Rescue.findByPk(id);
     if (!rescue) {
       return error(HttpStatus.NOT_FOUND, "Rescue not found");
     }
 
-    // createdAt is a Sequelize read-only attribute on existing records — instance.update()
-    // silently ignores it, so it must be set with { raw: true } to bypass that guard.
-    rescue.set("createdAt", new Date(created_at), { raw: true });
-    await rescue.save();
+    await rescue.update({ rescue_date: new Date(rescue_date) });
 
-    return success("Rescue date updated", { id: rescue.id, createdAt: rescue.get("createdAt") });
+    return success("Rescue date updated", { id: rescue.id, rescue_date: rescue.get("rescue_date") });
   } catch (err: any) {
     return error(HttpStatus.INTERNAL_SERVER_ERROR, err.message || "Failed to update rescue date");
   }

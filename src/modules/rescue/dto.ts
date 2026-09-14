@@ -33,5 +33,5 @@ export const RescueIdParamSchema = z.object({
 });
 
 export const UpdateRescueDateBodySchema = z.object({
-  created_at: z.string().refine((v) => !isNaN(new Date(v).getTime()), "Invalid date"),
+  rescue_date: z.string().refine((v) => !isNaN(new Date(v).getTime()), "Invalid date"),
 });

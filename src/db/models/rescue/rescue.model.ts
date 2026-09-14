@@ -49,6 +49,9 @@ export class Rescue extends Model {
   @Column({ type: DataType.INTEGER, allowNull: true })
   created_by!: number | null;
 
+  @Column({ type: DataType.DATE, allowNull: false, defaultValue: DataType.NOW })
+  rescue_date!: Date;
+
   @HasMany(() => RescueImage, { foreignKey: "rescue_id", onDelete: "CASCADE" })
   images?: RescueImage[];
 
