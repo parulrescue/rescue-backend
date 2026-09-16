@@ -1,7 +1,5 @@
 import Fastify from "fastify";
 import { randomUUID } from "crypto";
-import path from "path";
-import fs from "fs";
 
 // plugins
 import { requestIdPlugin } from "./plugins/requestId.plugin";
@@ -14,7 +12,6 @@ import { clientInfoPlugin } from "./plugins/client-info.plugin";
 import fastifyCors from "@fastify/cors";
 import fastifyMultipart from "@fastify/multipart";
 import fastifyRateLimit from "@fastify/rate-limit";
-import fastifyStatic from "@fastify/static";
 import fastifyHelmet from "@fastify/helmet";
 
 // modules
@@ -24,6 +21,7 @@ import { rescueRoutes } from "./modules/rescue/routes";
 import { animalRoutes } from "./modules/animal/routes";
 import { toAddressRoutes } from "./modules/to-address/routes";
 import { logExportRoutes } from "./modules/log-export/routes";
+import { fileRoutes } from "./modules/file/routes";
 
 // logger + env
 import { createFileLogger } from "./logger/pino";
@@ -82,25 +80,9 @@ export async function buildApp() {
         timeWindow: "1 minute",
     });
 
-    // Static file serving for public/ directory
-    const publicDir = path.join(process.cwd(), "public");
-    if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true });
-
-    // Primary file access route — DB stores relative paths like "profile_pic/avatar.jpg"
-    // and clients build URLs as `${BASE_URL}/api/file/${path}`.
-    app.register(fastifyStatic, {
-        root: publicDir,
-        prefix: "/api/file/",
-        decorateReply: false,
-    });
-
-    // Legacy route — kept for backward compatibility with rows that still hold
-    // "/public/..." or full-URL values created before the path-only migration.
-    app.register(fastifyStatic, {
-        root: publicDir,
-        prefix: "/public/",
-        decorateReply: false,
-    });
+    // File serving — manually joins the requested path onto public/ and streams
+    // the raw file, instead of relying on @fastify/static's own not-found handling.
+    app.register(fileRoutes);
 
     // Logging + client info
     app.register(clientInfoPlugin);
