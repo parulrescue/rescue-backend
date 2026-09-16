@@ -35,11 +35,20 @@ function serveFile(publicDir: string) {
     const fullPath = resolveWithinPublicDir(publicDir, requestedPath);
 
     if (!fullPath) {
-      return reply.status(HttpStatus.BAD_REQUEST).send(error(HttpStatus.BAD_REQUEST, "Invalid file path"));
+      reply.header("X-Resolved-Path", path.join(publicDir, requestedPath || ""));
+      return reply.status(HttpStatus.BAD_REQUEST).send({
+        ...error(HttpStatus.BAD_REQUEST, "Invalid file path"),
+        path: path.join(publicDir, requestedPath || ""),
+      });
     }
 
+    reply.header("X-Resolved-Path", fullPath);
+
     if (!fs.existsSync(fullPath) || !fs.statSync(fullPath).isFile()) {
-      return reply.status(HttpStatus.NOT_FOUND).send(error(HttpStatus.NOT_FOUND, "File not found"));
+      return reply.status(HttpStatus.NOT_FOUND).send({
+        ...error(HttpStatus.NOT_FOUND, "File not found"),
+        path: fullPath,
+      });
     }
 
     const ext = path.extname(fullPath).toLowerCase();
